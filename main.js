@@ -1,6 +1,3 @@
-
-
-
 var paddle2 =10,paddle1=10;
 
 var paddle1X = 10,paddle1Height = 110;
@@ -27,7 +24,11 @@ scoreRightWrist = 0;
 
 game_status = "";
 
- 
+function preload()
+{
+  bola_raquete = loadSound("ball_touch_paddel.wav");
+  missed = loadSound("missed.wav");
+}
 
 function setup(){
 var canvas =  createCanvas(700,600);
@@ -49,7 +50,6 @@ function gotPoses(results)
 {
   if(results.length > 0)
   {
-
     rightWristY = results[0].pose.rightWrist.y;
     rightWristX = results[0].pose.rightWrist.x;
     scoreRightWrist =  results[0].pose.keypoints[10].score;
@@ -61,6 +61,13 @@ function startGame()
 {
    game_status = "start";
    document.getElementById("status").innerHTML = "O jogo está carregando";
+}
+
+function restart()
+{
+  loop();
+  pcscore = 0;
+  playerscore = 0;
 }
 
 function draw(){
@@ -166,11 +173,11 @@ function move(){
   if (ball.x-2.5*ball.r/2< 0){
   if (ball.y >= paddle1Y&& ball.y <= paddle1Y + paddle1Height) {
     ball.dx = -ball.dx+0.5; 
-    
+    bola_raquete.play();
   }
   else{
     pcscore++;
-    
+    missed.play();
     reset();
     navigator.vibrate(100);
   }
@@ -183,7 +190,7 @@ if(pcscore ==4){
     stroke("white");
     textSize(25);
     text("Fim de jogo!",width/2,height/2);
-    text("Recarregue a página!",width/2,height/2+30)
+    text("Clique no botão reiniciar para jogar novamente!",width/2,height/2+30)
     noLoop();
     pcscore = 0;
  }
@@ -213,6 +220,6 @@ function paddleInCanvas(){
     paddle1Y =0;
   }
  
-  
+
 }
 
